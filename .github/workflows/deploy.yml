@@ -7,16 +7,26 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # ( Build to ./dist or other directory... )
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: '../dist'
+          publish-dir: './dist'
           production-branch: master
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: 'Deploy from GitHub Actions'
@@ -24,6 +34,6 @@ jobs:
           enable-commit-comment: true
           overwrites-pull-request-comment: true
         env:
-          NETLIFY_AUTH_TOKEN: 'nfp_5rpPAXADx8F8m3y1Gtne4FN6ioWv32ZAcf00'
-          NETLIFY_SITE_ID: '4e6ed02c-f328-4fa1-9cb7-5456f3f952b3'
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         timeout-minutes: 1
