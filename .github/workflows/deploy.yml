@@ -1,8 +1,6 @@
 # .github/workflows/netlify.yml
 name: Build and Deploy to Netlify and Vercel
 
-env:
-
 on:
   workflow_dispatch:
     inputs:
